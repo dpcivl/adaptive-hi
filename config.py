@@ -13,6 +13,11 @@ OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")
 
 OLLAMA_HOST = os.getenv("OLLAMA_HOST")  # None -> default http://localhost:11434
 
+# --- RAG paths ---
+DOCS_DIR = os.getenv("DOCS_DIR", "data/documents")
+CHROMA_DIR = os.getenv("CHROMA_DIR", "chroma_db")
+RAG_TOP_K = int(os.getenv("RAG_TOP_K", "4"))
+
 # --- Pricing: USD per 1,000,000 tokens, as (input_rate, output_rate). ---
 # Claude rates are current as of this project. VERIFY OpenAI rates at
 # https://openai.com/api/pricing/ before quoting them — they change.
