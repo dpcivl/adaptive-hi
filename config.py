@@ -17,6 +17,12 @@ OLLAMA_HOST = os.getenv("OLLAMA_HOST")  # None -> default http://localhost:11434
 DOCS_DIR = os.getenv("DOCS_DIR", "data/documents")
 CHROMA_DIR = os.getenv("CHROMA_DIR", "chroma_db")
 RAG_TOP_K = int(os.getenv("RAG_TOP_K", "4"))
+# Drop chunks whose readable-char ratio (Hangul + ASCII) falls below this —
+# filters TOC dot-leader noise and font-garble. Observed in THIS corpus: bad
+# chunks <=0.25, clean prose >=0.94; 0.5 sits in that wide gap with margin against
+# false-positives on punctuation-dense text. Not a guaranteed property of the
+# metric (see documents.readable_ratio). Tunable via env.
+MIN_READABLE_RATIO = float(os.getenv("MIN_READABLE_RATIO", "0.5"))
 
 # --- Pricing: USD per 1,000,000 tokens, as (input_rate, output_rate). ---
 # Claude rates are current as of this project. VERIFY OpenAI rates at

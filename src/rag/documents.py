@@ -8,7 +8,26 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
+import config
+
 SUPPORTED = {".md", ".txt", ".pdf"}
+
+
+def readable_ratio(text: str) -> float:
+    """Fraction of chars that are Hangul or ASCII printable.
+
+    A cheap extraction-quality proxy: clean Korean/English text scores ~1.0,
+    while font-garble or dot-leader (table-of-contents) noise scores low.
+    Not a complete quality metric — see config.MIN_READABLE_RATIO usage.
+    """
+
+    def ok(c: str) -> bool:
+        if c in " \n\t\r":
+            return True
+        o = ord(c)
+        return (0xAC00 <= o <= 0xD7A3) or (32 <= o <= 126)  # Hangul or ASCII printable
+
+    return sum(ok(c) for c in text) / max(1, len(text))
 
 
 @dataclass
@@ -82,7 +101,14 @@ def load_documents(docs_dir: str | Path) -> list[Chunk]:
         except Exception as e:  # noqa: BLE001 - skip one bad file, keep indexing the rest
             print(f"[documents] skipped {path.name}: {e}")
             continue
-        for i, piece in enumerate(chunk_text(text)):
+
+        pieces = chunk_text(text)
+        kept = [p for p in pieces if readable_ratio(p) >= config.MIN_READABLE_RATIO]
+        dropped = len(pieces) - len(kept)
+        if dropped:
+            print(f"[documents] {path.name}: dropped {dropped}/{len(pieces)} low-quality chunk(s)")
+
+        for i, piece in enumerate(kept):
             chunks.append(
                 Chunk(
                     doc_id=path.stem,
