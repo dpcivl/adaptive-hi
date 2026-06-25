@@ -6,7 +6,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # --- Model selection (override via .env) ---
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5:7b")
+# EXAONE 3.5 (LG, Korean-specialized) — chosen after qwen2.5:7b bled Chinese on
+# Korean FEMS answers even at low temperature (model-level language bias).
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "exaone3.5:7.8b")
 OLLAMA_EMBED_MODEL = os.getenv("OLLAMA_EMBED_MODEL", "bge-m3")
 CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-opus-4-8")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")
@@ -23,6 +25,10 @@ RAG_TOP_K = int(os.getenv("RAG_TOP_K", "4"))
 # false-positives on punctuation-dense text. Not a guaranteed property of the
 # metric (see documents.readable_ratio). Tunable via env.
 MIN_READABLE_RATIO = float(os.getenv("MIN_READABLE_RATIO", "0.5"))
+
+# --- Energy data ---
+ENERGY_CSV = os.getenv("ENERGY_CSV", "data/energy/plant_energy.csv")
+STEEL_CSV = os.getenv("STEEL_CSV", "data/real_energy/steel_industry.csv")
 
 # --- Pricing: USD per 1,000,000 tokens, as (input_rate, output_rate). ---
 # Claude rates are current as of this project. VERIFY OpenAI rates at

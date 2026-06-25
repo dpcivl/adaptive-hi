@@ -21,7 +21,15 @@ class OllamaProvider(LLMProvider):
                 {"role": "system", "content": system},
                 {"role": "user", "content": prompt},
             ],
-            options={"num_predict": max_tokens},
+            # Low temperature + repeat penalty curb the off-target-language (Chinese
+            # bleed) and derailment that small quantized models hit on long Korean
+            # generations once the grounded answer is exhausted.
+            options={
+                "num_predict": max_tokens,
+                "temperature": 0.2,
+                "top_p": 0.8,
+                "repeat_penalty": 1.1,
+            },
         )
         latency = time.perf_counter() - start
         return LLMResponse(

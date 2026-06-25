@@ -82,7 +82,7 @@ python -m scripts.smoke_test
 
 - [x] Day 1 — 골격: LLM 추상화, 합성 데이터 생성, 동작 확인
 - [x] Day 2 — RAG 파이프라인 (청킹 → 임베딩 → 검색)
-- [ ] Day 3 — 분석 레이어 + 3개 백엔드 동일 작업 실행
+- [x] Day 3 — 분석 레이어 + 3개 백엔드 동일 작업 실행·비교
 - [ ] Day 4 — 비교 평가 + Streamlit 대시보드
 - [ ] Day 5 — 버퍼 / README / 발표자료
 
