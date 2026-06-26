@@ -48,8 +48,14 @@ class AnalysisPipeline:
             self._briefs[track] = _load_brief(track)
         return self._briefs[track]
 
-    def answer(self, question: str, track: str, max_tokens: int = 512):
-        """Retrieve, build the prompt, and run it across every provider."""
+    def answer(self, question: str, track: str, max_tokens: int | None = None):
+        """Retrieve, build the prompt, and run it across every provider.
+
+        max_tokens=None resolves to the track's default (steel answers run long
+        and were truncating at 1024; synthetic stay short) — see config.
+        """
+        if max_tokens is None:
+            max_tokens = config.MAX_TOKENS_BY_TRACK.get(track, config.DEFAULT_MAX_TOKENS)
         brief = self._brief(track)
         guidelines = self.retriever.retrieve(question, k=config.RAG_TOP_K)
         system, user = build_analysis_prompt(brief, guidelines, question)

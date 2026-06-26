@@ -30,6 +30,16 @@ MIN_READABLE_RATIO = float(os.getenv("MIN_READABLE_RATIO", "0.5"))
 ENERGY_CSV = os.getenv("ENERGY_CSV", "data/energy/plant_energy.csv")
 STEEL_CSV = os.getenv("STEEL_CSV", "data/real_energy/steel_industry.csv")
 
+# --- Generation length (max output tokens), per track ---
+# steel 질문은 "관리자 관점으로 패턴 해석+절감안+M&V"처럼 개방형이라 길어진다
+# (claude 답변이 1024에서 절단됨). synthetic 이상탐지 질문은 단답형이라 1024로 충분.
+# answer()가 max_tokens 미지정 시 트랙으로 조회한다. env로 조정 가능.
+DEFAULT_MAX_TOKENS = int(os.getenv("MAX_TOKENS_DEFAULT", "1024"))
+MAX_TOKENS_BY_TRACK = {
+    "synthetic": int(os.getenv("MAX_TOKENS_SYNTHETIC", "1024")),
+    "steel": int(os.getenv("MAX_TOKENS_STEEL", "2048")),
+}
+
 # --- Pricing: USD per 1,000,000 tokens, as (input_rate, output_rate). ---
 # Claude rates are current as of this project. VERIFY OpenAI rates at
 # https://openai.com/api/pricing/ before quoting them — they change.
